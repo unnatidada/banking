@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -29,10 +30,10 @@ public class AccountHolder implements Serializable {
 	private String type;
 
 	@Column(name = "created_at", nullable = false)
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 
 	@Column(name = "updated_at", nullable = false)
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;

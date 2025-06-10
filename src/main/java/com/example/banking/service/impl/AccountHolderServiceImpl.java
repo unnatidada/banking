@@ -7,7 +7,9 @@ import com.example.banking.repository.AccountHolderRepository;
 import com.example.banking.service.AccountHolderService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +40,8 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 	@Override
 	public AccountHolderDto addAccountHolder(AccountHolderDto accountHolderDto) {
 		AccountHolder accountHolder = accountHolderMapper.toEntity(accountHolderDto);
+		accountHolder.setCreatedAt(LocalDateTime.now());
+		accountHolder.setUpdatedAt(LocalDateTime.now());
 		accountHolder = accountHolderRepository.save(accountHolder);
 
 		return accountHolderMapper.toDto(accountHolder);
@@ -45,9 +49,9 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 
 	@Override
 	public AccountHolderDto updateAccountHolder(Long id, AccountHolderDto accountHolderDto) {
-		AccountHolder accountHolder = accountHolderRepository.findById(id)
+		AccountHolder existAccount =  accountHolderRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Account with id %dnot found".formatted(id)));
-		accountHolderMapper.toEntity(accountHolderDto);
+		AccountHolder accountHolder = accountHolderMapper.toEntity(accountHolderDto,existAccount);
 		accountHolder = accountHolderRepository.save(accountHolder);
 		return accountHolderMapper.toDto(accountHolder);
 	}
@@ -70,6 +74,9 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 	public AccountHolderDto deposit(Long id, Double amount) {
 		AccountHolder accountHolder = accountHolderRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Account with id %dnot found".formatted(id)));
+		if(!accountHolder.getIsActive()){
+			throw new RuntimeException("Account is deActivated");
+		}
 		accountHolder.setBalance(accountHolder.getBalance() + amount);
 		accountHolder = accountHolderRepository.save(accountHolder);
 		return accountHolderMapper.toDto(accountHolder);
@@ -79,6 +86,9 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 	public AccountHolderDto withdraw(Long id, Double amount) {
 		AccountHolder accountHolder = accountHolderRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Account with id %dnot found".formatted(id)));
+		if(!accountHolder.getIsActive()){
+			throw new RuntimeException("Account is deActivated");
+		}
 		Double existingBalance = accountHolder.getBalance();
 		if (existingBalance < amount) {
 			throw new RuntimeException("Insufficient balance");
