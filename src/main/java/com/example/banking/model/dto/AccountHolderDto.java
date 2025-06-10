@@ -1,16 +1,14 @@
 package com.example.banking.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Setter
@@ -28,10 +26,10 @@ public class AccountHolderDto {
 	private String type;
 
 	@JsonProperty("created_at")
-	private Timestamp createdAt;
+	private String createdAt;
 
 	@JsonProperty("updated_at")
-	private Timestamp updatedAt;
+	private String updatedAt;
 
 	@JsonProperty("is_active")
 	private Boolean isActive = true;
